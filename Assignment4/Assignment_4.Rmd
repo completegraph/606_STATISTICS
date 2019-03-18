@@ -1,0 +1,184 @@
+---
+title: "DATA 606 Assignment 4"
+author: "Alexander Ng"
+date: "3/16/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE }
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(DATA606)
+```
+
+## 4.4
+
+a) mean height is 171.1   and median height is 170.3
+
+b) standard deviation is 9.4 and $IQR=Q3-Q1 = 177.8 - 163.8 = 14.0$.
+
+c) To decide whether a person is unusually tall or short, we calculate their Z-score and obtain the associated p-value of being at that height or more extreme.   If the probability is sufficiently small, we decide the height is unusual.  We decide that a height of $ |z| > 1.5 $ to be unusual.  Applying this criteria, we evaluate a person of 180 cm height.   $$ Z_{180} = \frac{180-171.1}{9.4} = `r (180-171.1)/9.4` $$
+
+```{r}
+z180 = (180 - 171.1) /9.4
+1 - pnorm( z180 )
+```
+
+We conclude that a height of 180 cm is not unusually tall since 17.2% of adults are this height or greater.
+
+Next, we consider a short person of height 155 cm:  
+```{r}
+(z155 = ( 155 - 171.1 ) / 9.4 )
+pnorm( z155)
+```
+
+We conclude that a height of 155 cm is unusual because only 4.3% of adults are this height or shorter and the Z score is -1.71 < -1.5.
+
+d) another random sample would give different individuals due to sampling variation.   Hence the mean and standard deviation are unlikely to remain unchanged under a different sample.
+
+e) The variability of the estimate of the mean is called the standard error.   The dataset **bdims** gives a standard error of 0.42 cm given its sample size as shown below.
+
+```{r}
+sd( bdims$hgt) / sqrt( length( bdims$hgt))
+```
+
+## 4.14  (Thanksgiving Spending, Part I.)
+
+a) FALSE.  The 95% confidence interval is about the average spending of all American adults not just the 436 survey participants.   We have perfect knowledge of the average spending of the sampled Americans.
+
+b) FALSE.  The distribution is valid even if the true distribution is skewed provided that the sample size is large enough and independent is assured.   Large sample size such as $n=436$ is sufficient to offset the skewness.
+
+c) FALSE.  We are 95% sure that the population mean will fall in the confidence interval.  However, if the distribution is skewed, 95% of random sample means may not fall inside a specific confidence interval.
+
+d) TRUE.  This is the definition of a confidence interval.
+
+e) TRUE.  A lower confidence level gives narrowere confidence bands.
+
+f) FALSE.  The margin of error decreases according to the square root of n law.  Thus, to reduce the margin to a third, we need 9 times has many observations in the sample, not three times.
+
+g) TRUE.   The sample mean is midway between the end points of the confidence interval.   Taking the right endpoint minus the sample mean gives the margin of error which is 4.4 as claimed.
+
+```{r}
+ 89.11 - 84.71 
+```
+
+
+## 4.24  Gifted Children, Part I.
+
+a) Yes.  Conditions for inference are met.  Intelligence appears to be normally distributed.  A random sample of size $n=36$ is sufficient to make inferences.   The sampling is random and less than 10% of the total population of the large city's school children so likely independent.
+
+b) We will use a one-sided hypothesis test.  The null hypothesis is:  
+$H_{0}: \text{Avg(Age Gifted Count to 10) >= Avg(Age General Count to 10) }$  
+and the alternative hypothesis is:  
+$H_{1}: \text{Avg(Age Gifted Count to 10) < Avg(Age General Count to 10)}$
+
+```{r}
+( Z = ( 30.69 - 32 ) / (4.31 /sqrt(36) ) )
+
+(pnorm(-abs(Z)) )
+
+```
+
+since the one-sided p-value is 3.41% is less than the significance level of 10%, we conclude gift children first count to 10 earlier than the general population.   We reject the null hypothesis.
+
+c) The p-value is for a one-sided hypothesis test.  The conditional probability that the average age that gifted children count to 10 is equal or greater than that of general children but we see data as low as 30.69 months is 3.41%.
+
+d) To calculate a 90% confidence interval for the average age at which gifted children first count to 10 successfully, we use:
+a Z-score of 1.645.
+
+```{r}
+
+( ci_lower_age = 30.69 - 1.645 * 4.31/sqrt(36) )
+( ci_upper_age = 30.69 + 1.645 * 4.31/sqrt(36) )
+
+```
+
+e) The upper age of the confidence interval is 31.87 which is less than the 32 months that we read online.
+This agrees with the result of the hypothesis test which is that the average age is 32 months.
+
+
+## 4.26  Gifted Children, Part II.
+
+a) First, we calculate the Z-score of the average mothers' IQ:
+
+$$Z = (118.2 - 100)/( 6.5/\sqrt{36})$$
+
+```{r}
+
+( Z = (118.2 - 100)/( 6.5/sqrt(36) ) )
+```
+
+Using a two sided hypothesis test, we can say that p-value associated with the Z-score of 16.8 is:
+
+```{r}
+
+2*pnorm(-abs(Z))
+
+```
+
+This p-value is much smaller than the significance level of 0.10.  Thus, we rejectly the null hypothesis that
+mothers' IQ is same as the population average.
+
+b) A 90% confidence interval for the mother's IQ is ( 116.42 , 119.98) as shown below.
+
+```{r}
+(ci_lower = 118.2 - 1.645 * 6.5/sqrt(36) )
+(ci_upper = 118.2 + 1.645 * 6.5/sqrt(36) )
+
+```
+
+c) The hypothesis test and confidence intervals agree.   The 90% confidence intervals don't contain 100 which means the average IQ is not within the 90% confidence interval.
+
+## 4.34 CLT.
+
+The sampling distribution is the probability distribution of a statistic calculated from 
+repeated random samples of size $n$
+of the population probability distribution.
+
+As $n$ increases to infinity, the sampling distribution of the sample mean converges to a normal distribution in shape.
+The mean of the sampling distribution is the population mean.  The spread of the sampling distribution decreases to zero as the sample size goes to infinity with the square root of sample size.
+
+## 4.40 CFLBs
+
+a) The probability $Pr[ Life >= 10500]$ is 6.68%.   We obtain this by calculating the Z-score of 10500 and computing the area to the left of Z in the standard normal distribution.
+
+$$ Z(10500) = \frac{ 10500 - 9000}{ 1000} = 1.5 $$
+
+```{r}
+1 - pnorm(1.5)
+```
+
+b) the distribution of the mean lifespan of 15 bulbs is normal with mean 9000 and standard deviation equal to s = 258.2 hours.
+
+```{r}
+(s = 1000/sqrt(15) )
+```
+
+c) The probability that the mean lifespan of 15 bulbs randomly chosen is 10500 or greater is almost zero: 3.13e-9
+
+```{r}
+(Z = ( 10500 - 9000)/ 258.2 )
+(1-pnorm(Z) )
+
+```
+
+d) We sketch the population histogram and the sampling distribution of the mean on the same scale below.
+The population mean is normally distributed with the wider shape.
+
+```{r}
+df= data.frame( pop = rnorm(300, 9000, 1000), samp = rnorm(300, 9000, 1000/sqrt(15)))
+
+ggplot(df) + geom_histogram(aes(x=df$pop), fill="red", alpha = 0.2, bins=25) + geom_histogram(aes(x=df$samp), fill="blue", alpha=0.3, bins=25)
+
+```
+
+e) If the lifespans of light bulbs is skewed, we would not be able to estimate a-c.  The sample size $n=15$ is too small to allow the central limit theorem to be applied.
+
+## 4.48  Same observation, different sample size.
+
+Assuming the calculation mistake did not involve calculation of the statistic itself but only the p-value, if $n$ increases from 50 to 500, **the p-value should decrease.**   For example, if we are assessing the difference of sample mean from a target population mean, then sampling distribution would have the same population mean but lower standard error with $n=500$.   Thus, the denominator of our Z-score would decrease, leading to a larger Z-score and thus lower p-value.
+
+
